@@ -3,17 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --backgroundColor: #000642;
+  --mainColor: #f1f1f1;
+  --lightMainTextColor: rgba(255, 255, 255, 0.8);
+  --mainTextColor: #ffffff;
+  --highlightColor: #66c9da;
+  --startScreenButtonColor: #0d6efd;
 }
 
 * {
@@ -23,6 +18,8 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  min-width: 320px;
+  font-size: 20px;
+  font-family: Montserrat, Arial, Helvetica, sans-serif;
+  background-color: var(--backgroundColor);
 }

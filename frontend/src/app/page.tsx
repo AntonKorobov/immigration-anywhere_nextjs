@@ -1,17 +1,23 @@
-import Image from 'next/image';
+import style from './page.module.scss';
+
+import { Button } from '@nextui-org/button';
 
 export default function Home() {
   return (
     <>
-      <h1>Immigration Anywhere</h1>
-      <Image
-        className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-        src="/next.svg"
-        alt="Next.js Logo"
-        width={180}
-        height={37}
-        priority
-      />
+      <div className={style.container}>
+        <section className={style.info}>
+          <p className={style.infoText}>Большое количество белорусов сейчас живут в различных странах мира.</p>
+          <p className={style.infoTextSmall}>Вот что они говорят:</p>
+        </section>
+        <div style={{ height: '300px' }} className="worldMap"></div>
+        <section className={style.review}>
+          <div className={style.reviewMessage}>Расскажите нам про жизнь в вашей локации!</div>
+          <Button className="px-unit-5" color="primary">
+            Рассказать
+          </Button>
+        </section>
+      </div>
     </>
   );
 }
