@@ -1,8 +1,8 @@
 'use client';
 
-import './worldMap.scss';
+import './WorldMap.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import style from './worldMap.module.scss';
+import style from './WorldMap.module.scss';
 
 import Map from 'react-map-gl';
 
