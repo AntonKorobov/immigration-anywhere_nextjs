@@ -1,0 +1,10 @@
+.worldMap {
+  position: relative;
+  height: 100vw;
+}
+
+@media (min-width: 768px) {
+  .worldMap {
+    height: 40vw;
+  }
+}
