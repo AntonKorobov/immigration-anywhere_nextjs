@@ -4,9 +4,41 @@ import './WorldMap.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import style from './WorldMap.module.scss';
 
-import Map from 'react-map-gl';
+import Map, { Marker } from 'react-map-gl';
+import { useEffect, useMemo, useState } from 'react';
+import { getLocations } from '@/shared/api/server/getLocations';
+import { ILocation } from '@/shared/api/postgresql/types';
+import Pin from './Pin';
 
 export function WorldMap() {
+  const [locations, setLocations] = useState<ILocation[]>([]);
+
+  useEffect(() => {
+    async function downloadLocations() {
+      const { data } = await getLocations();
+      setLocations(data);
+    }
+    downloadLocations();
+  }, []);
+
+  const pins = useMemo(
+    () =>
+      locations?.map((location) => (
+        <Marker
+          key={location.location_id}
+          longitude={Number(location.coordinates.y)}
+          latitude={Number(location.coordinates.x)}
+          anchor="bottom"
+          onClick={() => {
+            console.log(location.location);
+          }}
+        >
+          <Pin />
+        </Marker>
+      )),
+    [locations]
+  );
+
   return (
     <div className={style.worldMap}>
       <Map
@@ -25,7 +57,7 @@ export function WorldMap() {
           name: 'globe',
         }}
       >
-        {}
+        {pins}
       </Map>
     </div>
   );
