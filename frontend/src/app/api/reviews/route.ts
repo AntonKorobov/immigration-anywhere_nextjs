@@ -1,3 +1,5 @@
+export const revalidate = 0;
+
 import { sql } from '@vercel/postgres';
 import { NextResponse } from 'next/server';
 
