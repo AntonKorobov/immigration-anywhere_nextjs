@@ -11,9 +11,10 @@ import { WorldMapPin } from '../worldMapPin/WorldMapPin';
 
 interface IWorldMapProps {
   locations: ILocation[];
+  onMarkerClick: (locationId: number | null, locationName: string) => void;
 }
 
-export function WorldMap({ locations }: IWorldMapProps) {
+export function WorldMap({ locations, onMarkerClick }: IWorldMapProps) {
   const pins = useMemo(
     () =>
       locations?.map((location) => (
@@ -22,9 +23,7 @@ export function WorldMap({ locations }: IWorldMapProps) {
           longitude={Number(location.coordinates.y)}
           latitude={Number(location.coordinates.x)}
           anchor="bottom"
-          onClick={() => {
-            console.log(location.location);
-          }}
+          onClick={() => onMarkerClick(location.location_id, location.location_name)}
         >
           <WorldMapPin />
         </Marker>
