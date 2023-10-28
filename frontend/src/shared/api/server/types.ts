@@ -1,4 +1,4 @@
-import { ILocation } from '../postgresql/types';
+import { ILocation, IReview } from '../postgresql/types';
 
 export interface GETLocationGeodataResponse {
   data: {
@@ -29,5 +29,10 @@ export interface POSTLocationRequest {
 
 export interface GETLocationsResponse {
   data: ILocation[];
+  status: number;
+}
+
+export interface GETReviewsResponse {
+  data: IReview[];
   status: number;
 }
