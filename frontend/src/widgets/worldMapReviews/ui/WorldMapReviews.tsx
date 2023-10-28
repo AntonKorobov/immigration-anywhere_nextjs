@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 import { useGetLocations } from '../';
 import { WorldMap } from '@/entities/worldMap/ui';
-import { Reviews } from '@/widgets/reviews/ui/Reviews';
+import { Reviews } from '@/widgets/reviews/';
 
 export function WorldMapReviews() {
   const [locations] = useGetLocations();

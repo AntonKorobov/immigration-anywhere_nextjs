@@ -18,7 +18,7 @@ export function ModalWindow({ children, isOpen, onClose, title }: IModalWindow) 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1 text-2xl">{title}</ModalHeader>
         <ModalBody>{children}</ModalBody>
         <ModalFooter></ModalFooter>
       </ModalContent>
