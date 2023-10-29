@@ -20,3 +20,7 @@ export async function GET(request: Request) {
 
   return NextResponse.json({ data: data.rows, status: 200 } as GETReviewsResponse);
 }
+
+export async function POST(request: Request) {
+  return NextResponse.json({ data: {}, status: 200 } as GETReviewsResponse);
+}
