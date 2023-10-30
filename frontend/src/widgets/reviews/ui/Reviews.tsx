@@ -26,7 +26,7 @@ export function Reviews({ isOpen, locationId, onClose, locationName }: IReviews)
           );
         })
       ) : (
-        <p>Loading...</p> //TODO spinner
+        <p>Нет отзывов</p> //TODO spinner
       )}
     </ModalWindow>
   );

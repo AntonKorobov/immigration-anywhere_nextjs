@@ -8,17 +8,20 @@ import clsx from 'clsx';
 
 import { ModalWindow } from '@/shared/ui/modalWindow';
 import { Button } from '@nextui-org/button';
+import { postReview } from '@/shared/api/server/postReview';
+import { POSTReviewsRequest } from '@/shared/api/server/types';
+import { getLocationGeoData } from '@/shared/api/server/getLocationGeoData';
 
 interface IReviewFormProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface IReviewFormData {
+interface IFormData {
   userName: string;
-  locationName: string;
+  rating: number;
   reviewText: string;
-  rating: string;
+  locationName: string;
 }
 
 export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
@@ -26,22 +29,22 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
     handleSubmit,
     register,
     formState: { errors, isSubmitting, isDirty, isValid },
-  } = useForm<IReviewFormData>({});
+  } = useForm<IFormData>({});
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const labelId = useId();
 
-  async function onSubmit(formData: IReviewFormData) {
+  async function onSubmit(formData: IFormData) {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/submit', {
-        method: 'POST',
-        body: formData,
-      });
+      //TODO receive list of data and check from it
+      const locationGeoData = await getLocationGeoData(formData.locationName);
 
-      const data = await response.json();
-      console.log(data);
+      const response = await postReview({
+        ...formData,
+        locationGeoData,
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -59,6 +62,9 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
           className="style.px-unit-5"
           color="primary"
           type="submit"
+          onClick={() => {
+            getLocationGeoData('Tbilisi');
+          }}
           // disabled={!isValid}
         >
           Оставить отзыв
@@ -74,7 +80,7 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
         <div className={style.formGroup}>
           <label htmlFor={labelId + 'name-input'}>{'Имя'}</label>
           <input
-            {...register('locationName', {
+            {...register('userName', {
               required: 'Обязательное поле' as unknown as string,
               maxLength: {
                 value: 15,
@@ -167,6 +173,14 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
             <p className={style.errorMessageText}>{errors?.reviewText?.message}</p>
           )}
         </div>
+        <Button
+          className="style.px-unit-5"
+          color="primary"
+          type="submit"
+          // disabled={!isValid}
+        >
+          Оставить отзыв
+        </Button>
       </form>
     </ModalWindow>
   );
