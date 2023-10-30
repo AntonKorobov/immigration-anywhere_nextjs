@@ -53,24 +53,7 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
   }
 
   return (
-    <ModalWindow
-      isOpen={isOpen}
-      onClose={onClose}
-      title={'Оставить отзыв'}
-      renderFooter={() => (
-        <Button
-          className="style.px-unit-5"
-          color="primary"
-          type="submit"
-          onClick={() => {
-            getLocationGeoData('Tbilisi');
-          }}
-          // disabled={!isValid}
-        >
-          Оставить отзыв
-        </Button>
-      )}
-    >
+    <ModalWindow isOpen={isOpen} onClose={onClose} title={'Оставить отзыв'}>
       <form
         className={style.reviewForm}
         action=""
