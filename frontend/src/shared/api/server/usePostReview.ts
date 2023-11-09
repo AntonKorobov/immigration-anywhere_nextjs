@@ -4,17 +4,14 @@ import { POSTReviewsRequest, POSTReviewsResponse } from './types';
 import { useSWRConfig } from 'swr';
 
 async function postReview(url: string, { arg }: { arg: POSTReviewsRequest }) {
-  return fetch(url, {
+  await fetch(url, {
     method: 'POST',
     body: JSON.stringify(arg),
   }).then((r) => r.json());
 }
 
 export function usePostReview() {
-  const { trigger, isMutating } = useSWRMutation<POSTReviewsResponse>(
-    `/api/reviews`,
-    postReview
-  );
+  const { trigger, isMutating } = useSWRMutation(`/api/reviews`, postReview);
   const { mutate } = useSWRConfig();
 
   return {
