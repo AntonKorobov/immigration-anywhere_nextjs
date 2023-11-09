@@ -19,15 +19,12 @@ export async function GET(request: NextRequest) {
       coordinates: { x: request.data[0].latitude, y: request.data[0].longitude },
       countryId: request.data[0].country_code,
     };
-    return NextResponse.json(response, {
+    return NextResponse.json([response], {
       status: 200,
     });
   } else {
-    return NextResponse.json(
-      {},
-      {
-        status: 404,
-      }
-    );
+    return NextResponse.json([], {
+      status: 404,
+    });
   }
 }

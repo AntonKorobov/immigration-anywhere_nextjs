@@ -9,8 +9,9 @@ import clsx from 'clsx';
 import { ModalWindow } from '@/shared/ui/modalWindow';
 import { Button } from '@nextui-org/button';
 import { postReview } from '@/shared/api/server/postReview';
-import { POSTReviewsRequest } from '@/shared/api/server/types';
+import { GETLocationGeoDataResponse } from '@/shared/api/server/types';
 import { getLocationGeoData } from '@/shared/api/server/getLocationGeoData';
+import { AutocompleteSelector } from '@/features/autocompleteSelector';
 
 interface IReviewFormProps {
   isOpen: boolean;
@@ -30,25 +31,33 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
     register,
     formState: { errors, isSubmitting, isDirty, isValid },
   } = useForm<IFormData>({});
+  const [locationGeoData, setLocationGeoData] = useState<GETLocationGeoDataResponse>([]);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const labelId = useId();
 
   async function onSubmit(formData: IFormData) {
     setIsLoading(true);
-
     try {
       //TODO receive list of data and check from it
-      const locationGeoData = await getLocationGeoData(formData.locationName);
-
-      const response = await postReview({
-        ...formData,
-        locationGeoData,
-      });
+      if (locationGeoData.length > 0) {
+        const response = await postReview({
+          ...formData,
+          locationGeoData: { ...locationGeoData[0] },
+        });
+      }
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function locationNameInputHandler(inputValue: string) {
+    if (inputValue) {
+      const data = await getLocationGeoData(inputValue);
+      if (data) setLocationGeoData(data);
+      else setLocationGeoData([]);
     }
   }
 
@@ -85,26 +94,15 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
             <p className={style.errorMessageText}>{errors?.userName?.message}</p>
           )}
         </div>
-        <div className={style.formGroup}>
-          <label htmlFor={labelId + 'location-input'}>{'Город/Населенный пункт'}</label>
-          <input
-            {...register('locationName', {
-              required: 'Обязательное поле' as unknown as string,
-              maxLength: {
-                value: 30,
-                message: 'Максимум 30 символов' as unknown as string,
-              },
-              minLength: {
-                value: 2,
-                message: 'Минимум 2 символа' as unknown as string,
-              },
-            })}
-            type="text"
-            placeholder={'Варшава...'}
-            className={clsx(style.inputElement, style.withCustomFocus)}
-            id={labelId + 'location-input'}
-          />
-        </div>
+        <AutocompleteSelector
+          registerForm={register('locationName', {
+            required: 'Обязательное поле' as unknown as string,
+          })}
+          data={locationGeoData}
+          setData={(searchString) => {
+            locationNameInputHandler(searchString);
+          }}
+        />
         <div className={style.errorMessage}>
           {errors?.locationName && (
             <p className={style.errorMessageText}>{errors?.locationName?.message}</p>
