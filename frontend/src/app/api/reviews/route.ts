@@ -2,11 +2,7 @@ export const revalidate = 0;
 
 import { NextResponse } from 'next/server';
 
-import {
-  GETReviewsResponse,
-  POSTReviewsResponse,
-  POSTReviewsRequest,
-} from '@/shared/api/server/types';
+import { POSTReviewsRequest } from '@/shared/api/server/types';
 import { getReviewsPostgresql } from '@/shared/api/postgresql/getReviewsPostgresql';
 import { postReviewPostgresql } from '@/shared/api/postgresql/postReviewPostgresql';
 
@@ -14,10 +10,16 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const locationId = Number(searchParams.get('location_id')) || null;
   if (!locationId) {
-    return NextResponse.json({ data: [], status: 404 } as GETReviewsResponse); //TODO
+    return NextResponse.json({ message: `Location id is wrong` }, { status: 404 });
   }
   const data = await getReviewsPostgresql(locationId);
-  return NextResponse.json({ data: data.rows, status: 200 } as GETReviewsResponse);
+  if (!data) {
+    return NextResponse.json(
+      { message: `Can't get data from database` },
+      { status: 500 }
+    );
+  }
+  return NextResponse.json(data.rows, { status: 200 });
 }
 
 export async function POST(request: Request) {
@@ -31,8 +33,6 @@ export async function POST(request: Request) {
     locationGeoData,
   });
 
-  return NextResponse.json({
-    data: response.rows[0],
-    status: 200,
-  } as POSTReviewsResponse);
+  if (response) return NextResponse.json({ message: 'Success' }, { status: 200 });
+  return NextResponse.json({ message: `Can't get data from database` }, { status: 500 });
 }

@@ -1,4 +1,4 @@
-import { GETLocationGeoDataResponse } from '../server/types';
+import { GETLocationGeoDataResponse, ILocationGeoData } from '../server/types';
 
 export interface ILocation {
   location_id: number;
@@ -38,5 +38,5 @@ export interface IPostReviewPostgresqlRequest {
   userName: string;
   rating: number;
   reviewText: string;
-  locationGeoData: GETLocationGeoDataResponse;
+  locationGeoData: ILocationGeoData;
 }

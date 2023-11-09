@@ -1,6 +1,7 @@
 import { Review } from '@/entities/review/';
+import { useGetReviews } from '@/shared/api/server/useGetReviews';
+import { Loading } from '@/shared/ui/loading';
 import { ModalWindow } from '@/shared/ui/modalWindow';
-import { useGetReviews } from '../model/useGetReviews';
 
 interface IReviews {
   isOpen: boolean;
@@ -10,11 +11,13 @@ interface IReviews {
 }
 
 export function Reviews({ isOpen, locationId, onClose, locationName }: IReviews) {
-  const [reviews] = useGetReviews(locationId);
+  const { reviews, reviewsError, reviewsIsLoading } = useGetReviews(locationId);
 
   return (
     <ModalWindow isOpen={isOpen} onClose={onClose} title={locationName}>
-      {reviews.length > 0 ? (
+      {reviewsIsLoading ? (
+        <Loading />
+      ) : reviews && reviews.length > 0 ? (
         reviews.map((review) => {
           return (
             <Review
@@ -26,7 +29,7 @@ export function Reviews({ isOpen, locationId, onClose, locationName }: IReviews)
           );
         })
       ) : (
-        <p>Нет отзывов</p> //TODO spinner
+        <p>Нет отзывов</p>
       )}
     </ModalWindow>
   );

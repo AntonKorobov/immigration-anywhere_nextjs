@@ -8,10 +8,10 @@ import clsx from 'clsx';
 
 import { ModalWindow } from '@/shared/ui/modalWindow';
 import { Button } from '@nextui-org/button';
-import { postReview } from '@/shared/api/server/postReview';
 import { GETLocationGeoDataResponse } from '@/shared/api/server/types';
 import { getLocationGeoData } from '@/shared/api/server/getLocationGeoData';
 import { AutocompleteSelector } from '@/features/autocompleteSelector';
+import { usePostReview } from '@/shared/api/server/usePostReview';
 
 interface IReviewFormProps {
   isOpen: boolean;
@@ -29,27 +29,18 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors, isSubmitting, isDirty, isValid },
   } = useForm<IFormData>({});
-  const [locationGeoData, setLocationGeoData] = useState<GETLocationGeoDataResponse>([]);
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const labelId = useId();
 
+  const { postReview, isPostingReview } = usePostReview();
+  const [locationGeoData, setLocationGeoData] = useState<GETLocationGeoDataResponse>([]);
+
   async function onSubmit(formData: IFormData) {
-    setIsLoading(true);
-    try {
-      //TODO receive list of data and check from it
-      if (locationGeoData.length > 0) {
-        const response = await postReview({
-          ...formData,
-          locationGeoData: { ...locationGeoData[0] },
-        });
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+    if (locationGeoData.length > 0) {
+      postReview({ ...formData, locationGeoData: { ...locationGeoData[0] } });
+      reset();
     }
   }
 
@@ -158,7 +149,7 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
           className="style.px-unit-5"
           color="primary"
           type="submit"
-          // disabled={!isValid}
+          disabled={isPostingReview}
         >
           Оставить отзыв
         </Button>
