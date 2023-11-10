@@ -4,10 +4,12 @@ import { POSTReviewsRequest, POSTReviewsResponse } from './types';
 import { useSWRConfig } from 'swr';
 
 async function postReview(url: string, { arg }: { arg: POSTReviewsRequest }) {
-  await fetch(url, {
+  const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify(arg),
   }).then((r) => r.json());
+
+  return response as unknown as POSTReviewsResponse;
 }
 
 export function usePostReview() {
@@ -15,10 +17,11 @@ export function usePostReview() {
   const { mutate } = useSWRConfig();
 
   return {
-    postReview: (data: POSTReviewsRequest) => {
-      trigger(data);
+    postReview: async (data: POSTReviewsRequest) => {
+      const response = await trigger(data);
       mutate('/api/locations');
       // TODO Try to move mutation in feature component
+      return { isSuccess: response.isSuccess };
     },
     isPostingReview: isMutating,
   };

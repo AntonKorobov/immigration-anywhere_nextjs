@@ -1,42 +1,9 @@
-.errorMessage {
-  height: 20px;
-  color: red;
-  font-size: 16px;
+.reviewForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.inputElement {
-  font-size: 16px;
-  width: 100%;
-  padding: 4px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-}
-
-.inputElementSelect {
-  display: block;
-  margin-bottom: 20px;
-}
-
-.reviewFormTextarea {
-  height: 150px;
-}
-
-.formControl {
-  font-size: 16px;
-}
-
-.formGroup label {
-  font-size: 19px;
-  margin-bottom: 5px;
-  margin-right: 10px;
-}
-
-.withCustomFocus {
-  &:focus {
-    background-color: #fff;
-    border-color: #86b7fe;
-    box-shadow: 0 0 0 2.5px rgba(13, 110, 253, 0.25);
-    color: #212529;
-    outline: 0;
-  }
+.submitButtonWrapper {
+  text-align: center;
 }

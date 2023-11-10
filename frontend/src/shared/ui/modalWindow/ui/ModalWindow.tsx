@@ -9,9 +9,9 @@ import {
 
 interface IModalWindow {
   title: string;
-  isOpen: boolean;
+  isOpen?: boolean;
   children: ReactNode;
-  onClose: () => void;
+  onClose?: () => void;
   renderFooter?: () => ReactNode;
 }
 

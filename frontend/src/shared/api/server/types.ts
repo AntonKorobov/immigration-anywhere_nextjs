@@ -61,6 +61,6 @@ export interface POSTReviewsRequest {
 }
 
 export interface POSTReviewsResponse {
-  data: IReview;
-  status: number;
+  message: string;
+  isSuccess: boolean;
 }

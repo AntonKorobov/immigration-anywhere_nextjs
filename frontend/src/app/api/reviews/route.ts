@@ -26,13 +26,18 @@ export async function POST(request: Request) {
   const { userName, rating, reviewText, locationGeoData } =
     (await request.json()) as POSTReviewsRequest;
 
-  const response = await postReviewPostgresql({
-    userName,
-    rating,
-    reviewText,
-    locationGeoData,
-  });
-
-  if (response) return NextResponse.json({ message: 'Success' }, { status: 200 });
-  return NextResponse.json({ message: `Can't get data from database` }, { status: 500 });
+  try {
+    const response = await postReviewPostgresql({
+      userName,
+      rating,
+      reviewText,
+      locationGeoData,
+    });
+    return NextResponse.json({ message: 'Success', isSuccess: true }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: `Can't get data from database`, isSuccess: false },
+      { status: 500 }
+    );
+  }
 }

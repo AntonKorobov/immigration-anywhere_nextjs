@@ -17,6 +17,5 @@ export async function postReviewPostgresql({
     locationData = await getLocationPostgresql(locationGeoData.locationName);
   }
   const locationId = locationData.rows[0].location_id;
-
   return sql`INSERT INTO reviews (user_name, location_id, rating, review_text) VALUES (${userName}, ${locationId}, ${rating}, ${reviewText});` as unknown as IGetReviewsPostgresqlResponse;
 }

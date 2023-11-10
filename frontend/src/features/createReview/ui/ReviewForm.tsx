@@ -1,17 +1,15 @@
 import style from './ReviewForm.module.scss';
 
-import { useId, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import clsx from 'clsx';
 
 import { ModalWindow } from '@/shared/ui/modalWindow';
-import { Button } from '@nextui-org/button';
+import { Button, Input, Select, SelectItem, Textarea } from '@nextui-org/react';
 import { GETLocationGeoDataResponse } from '@/shared/api/server/types';
 import { getLocationGeoData } from '@/shared/api/server/getLocationGeoData';
 import { AutocompleteSelector } from '@/features/autocompleteSelector';
 import { usePostReview } from '@/shared/api/server/usePostReview';
+import { Spinner } from '@nextui-org/react';
 
 interface IReviewFormProps {
   isOpen: boolean;
@@ -30,17 +28,27 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
     handleSubmit,
     register,
     reset,
-    formState: { errors, isSubmitting, isDirty, isValid },
+    formState: { errors },
   } = useForm<IFormData>({});
-  const labelId = useId();
 
   const { postReview, isPostingReview } = usePostReview();
   const [locationGeoData, setLocationGeoData] = useState<GETLocationGeoDataResponse>([]);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isFailModalOpen, setIsFailModalOpen] = useState(false);
 
   async function onSubmit(formData: IFormData) {
     if (locationGeoData.length > 0) {
-      postReview({ ...formData, locationGeoData: { ...locationGeoData[0] } });
-      reset();
+      const response = await postReview({
+        ...formData,
+        locationGeoData: { ...locationGeoData[0] },
+      });
+      if (response.isSuccess) {
+        onClose();
+        reset();
+        setIsSuccessModalOpen(true);
+      } else {
+        setIsFailModalOpen(true);
+      }
     }
   }
 
@@ -53,107 +61,135 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
   }
 
   return (
-    <ModalWindow isOpen={isOpen} onClose={onClose} title={'Оставить отзыв'}>
-      <form
-        className={style.reviewForm}
-        action=""
-        method="POST"
-        onSubmit={handleSubmit(onSubmit)}
+    <>
+      <ModalWindow
+        isOpen={isOpen}
+        onClose={() => {
+          onClose();
+          reset();
+        }}
+        title={'Оставить отзыв'}
       >
-        <div className={style.formGroup}>
-          <label htmlFor={labelId + 'name-input'}>{'Имя'}</label>
-          <input
+        <form
+          className={style.reviewForm}
+          action=""
+          method="POST"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Input
             {...register('userName', {
-              required: 'Обязательное поле' as unknown as string,
+              required: 'Обязательное поле',
               maxLength: {
                 value: 15,
-                message: 'Максимум 15 символов' as unknown as string,
+                message: 'Максимум 15 символов',
               },
               minLength: {
                 value: 2,
-                message: 'Минимум 2 символа' as unknown as string,
+                message: 'Минимум 2 символа',
               },
             })}
             type="text"
-            placeholder={'Юля...'}
-            className={clsx(style.inputElement, style.withCustomFocus)}
-            id={labelId + 'name-input'}
+            label="Имя"
+            placeholder="Юля..."
+            isInvalid={Boolean(errors.userName)}
+            errorMessage={errors.userName?.message}
+            labelPlacement={'outside'}
+            variant="faded"
+            fullWidth={true}
+            radius="sm"
           />
-        </div>
-        <div className={style.errorMessage}>
-          {errors?.userName && (
-            <p className={style.errorMessageText}>{errors?.userName?.message}</p>
-          )}
-        </div>
-        <AutocompleteSelector
-          registerForm={register('locationName', {
-            required: 'Обязательное поле' as unknown as string,
-          })}
-          data={locationGeoData}
-          setData={(searchString) => {
-            locationNameInputHandler(searchString);
-          }}
-        />
-        <div className={style.errorMessage}>
-          {errors?.locationName && (
-            <p className={style.errorMessageText}>{errors?.locationName?.message}</p>
-          )}
-        </div>
-        <div className={style.formGroup}>
-          <label htmlFor={labelId + 'rating-input'}>Рейтинг:</label>
-          <select
-            {...register('rating')}
-            className={clsx(
-              style.inputElement,
-              style.inputElementSelect,
-              style.withCustomFocus
-            )}
-            id={labelId + 'rating-input'}
+          <AutocompleteSelector
+            registerForm={register('locationName', {
+              required: 'Обязательное поле',
+            })}
+            data={locationGeoData}
+            setData={(searchString) => {
+              locationNameInputHandler(searchString);
+            }}
+            isInvalid={Boolean(errors.locationName)}
+            errorMessage={errors.locationName?.message}
+            label="Город/Населенный пункт"
+            placeholder="Поиск локации"
+          />
+          <Select
+            {...register('rating', {
+              required: 'Обязательное поле',
+            })}
+            label="Рейтинг:"
+            placeholder="Выберите рейтинг"
+            isInvalid={Boolean(errors.rating)}
+            errorMessage={errors.rating?.message}
+            labelPlacement="outside"
+            radius="sm"
+            variant="faded"
+            defaultSelectedKeys={'5'}
           >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-        </div>
-        <div className={style.formGroup}>
-          <label htmlFor={labelId + 'review-input'}>Отзывы</label>
-          <textarea
+            {['1', '2', '3', '4', '5'].map((rating) => (
+              <SelectItem key={rating} value={rating}>
+                {rating}
+              </SelectItem>
+            ))}
+          </Select>
+          <Textarea
             {...register('reviewText', {
-              required: 'Обязательное поле' as unknown as string,
+              required: 'Обязательное поле',
               maxLength: {
                 value: 500,
-                message: 'Максимум 500 символов' as unknown as string,
+                message: 'Максимум 500 символов',
               },
               minLength: {
                 value: 10,
-                message: 'Минимум 10 символов' as unknown as string,
+                message: 'Минимум 10 символов',
               },
             })}
-            placeholder={'Опишите ваш опыт...'}
-            className={clsx(
-              style.inputElement,
-              style.reviewFormTextarea,
-              style.withCustomFocus
-            )}
-            id={labelId + 'review-input'}
+            label="Отзыв"
+            placeholder="Опишите ваш опыт..."
+            isInvalid={Boolean(errors.reviewText)}
+            errorMessage={errors.reviewText?.message}
+            disableAnimation
+            disableAutosize
+            classNames={{
+              input: 'h-40',
+              helperWrapper: 'static mt-1',
+            }}
+            labelPlacement="outside"
+            variant="faded"
           />
-        </div>
-        <div className={style.errorMessage}>
-          {errors?.reviewText && (
-            <p className={style.errorMessageText}>{errors?.reviewText?.message}</p>
-          )}
-        </div>
-        <Button
-          className="style.px-unit-5"
-          color="primary"
-          type="submit"
-          disabled={isPostingReview}
-        >
-          Оставить отзыв
-        </Button>
-      </form>
-    </ModalWindow>
+          <div className={style.submitButtonWrapper}>
+            <Button
+              className="style.px-unit-5"
+              color="primary"
+              type="submit"
+              disabled={isPostingReview}
+            >
+              {isPostingReview ? (
+                <>
+                  <Spinner color="white" size="sm" />
+                  <p>Отправка отзыва</p>
+                </>
+              ) : (
+                'Оставить отзыв'
+              )}
+            </Button>
+          </div>
+        </form>
+      </ModalWindow>
+
+      <ModalWindow
+        title="Что-то пошло не так"
+        isOpen={isFailModalOpen}
+        onClose={() => setIsFailModalOpen(false)}
+      >
+        <p>Отзыв не был создан</p>
+      </ModalWindow>
+
+      <ModalWindow
+        title="Спасибо за отзыв"
+        isOpen={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+      >
+        <p>Отзыв был создан успешно</p>
+      </ModalWindow>
+    </>
   );
 }

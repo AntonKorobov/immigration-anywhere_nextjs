@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { Autocomplete, AutocompleteItem } from '@nextui-org/react';
 
 import { GETLocationGeoDataResponse } from '@/shared/api/server/types';
@@ -8,6 +8,10 @@ interface IAutocompleteSelectorProps {
   data: GETLocationGeoDataResponse;
   setData: (searchString: string) => void;
   registerForm: UseFormRegisterReturn;
+  isInvalid: boolean;
+  errorMessage: ReactNode;
+  label: string;
+  placeholder: string;
 }
 //Solving typescript error <<Property 'continuePropagation' does not exist on type 'React.KeyboardEvent<HTMLInputElement> | KeyboardEvent'>>
 interface CustomKeyboardEvent extends React.KeyboardEvent<HTMLInputElement> {
@@ -18,6 +22,10 @@ export function AutocompleteSelector({
   data,
   registerForm,
   setData,
+  isInvalid,
+  errorMessage,
+  label,
+  placeholder,
 }: IAutocompleteSelectorProps) {
   const [query, setQuery] = useState('');
   const [delay, setDelay] = useState<NodeJS.Timeout>();
@@ -35,11 +43,11 @@ export function AutocompleteSelector({
   return (
     <Autocomplete
       {...registerForm}
-      label="Город/Населенный пункт"
-      placeholder="Поиск локации"
+      label={label}
+      placeholder={placeholder}
       fullWidth={true}
       radius="sm"
-      variant={'bordered'}
+      variant="faded"
       labelPlacement={'outside'}
       onKeyDown={(e: CustomKeyboardEvent) => {
         e.continuePropagation();
@@ -47,6 +55,9 @@ export function AutocompleteSelector({
       items={data}
       inputValue={query}
       onInputChange={(value) => setQuery(value)}
+      isInvalid={isInvalid}
+      errorMessage={errorMessage}
+      menuTrigger="input"
     >
       {(item) => (
         <AutocompleteItem key={item.locationName}>{item.locationName}</AutocompleteItem>
