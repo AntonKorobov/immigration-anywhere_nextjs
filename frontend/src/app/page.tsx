@@ -1,7 +1,7 @@
-import { WorldMapReviews } from '@/widgets/worldMapReviews';
 import style from './page.module.scss';
 
-import { Button } from '@nextui-org/button';
+import { WorldMapReviews } from '@/widgets/worldMapReviews';
+import { MakeReview } from '@/widgets/makeReview/';
 
 export default function Home() {
   return (
@@ -15,10 +15,10 @@ export default function Home() {
         </section>
         <WorldMapReviews />
         <section className={style.review}>
-          <div className={style.reviewMessage}>Расскажите нам про жизнь в вашей локации!</div>
-          <Button className="px-unit-5" color="primary">
-            Рассказать
-          </Button>
+          <div className={style.reviewMessage}>
+            Расскажите нам про жизнь в вашей локации!
+          </div>
+          <MakeReview />
         </section>
       </div>
     </>

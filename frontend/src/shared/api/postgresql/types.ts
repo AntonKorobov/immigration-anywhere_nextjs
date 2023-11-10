@@ -1,3 +1,5 @@
+import { GETLocationGeoDataResponse, ILocationGeoData } from '../server/types';
+
 export interface ILocation {
   location_id: number;
   location_name: string;
@@ -8,9 +10,15 @@ export interface ILocation {
   };
 }
 
-export interface ISelectFromLocationsResponse {
+export interface IGetLocationsPostgresqlResponse {
   [key: string]: unknown;
   rows: ILocation[];
+}
+
+export interface IPostLocationPostgresqlRequest {
+  locationName: string;
+  coordinates: { x: number; y: number };
+  countryId: string;
 }
 
 export interface IReview {
@@ -21,7 +29,14 @@ export interface IReview {
   review_text: string;
 }
 
-export interface ISelectFromReviewsResponse {
+export interface IGetReviewsPostgresqlResponse {
   [key: string]: unknown;
   rows: IReview[];
+}
+
+export interface IPostReviewPostgresqlRequest {
+  userName: string;
+  rating: number;
+  reviewText: string;
+  locationGeoData: ILocationGeoData;
 }

@@ -9,18 +9,29 @@ import {
 
 interface IModalWindow {
   title: string;
-  isOpen: boolean;
+  isOpen?: boolean;
   children: ReactNode;
-  onClose: () => void;
+  onClose?: () => void;
+  renderFooter?: () => ReactNode;
 }
 
-export function ModalWindow({ children, isOpen, onClose, title }: IModalWindow) {
+export function ModalWindow({
+  children,
+  isOpen,
+  onClose,
+  title,
+  renderFooter,
+}: IModalWindow) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1 text-2xl">{title}</ModalHeader>
+      <ModalContent className="divide-y">
+        <ModalHeader className="flex flex-col gap-1 text-2xl font-normal">
+          {title}
+        </ModalHeader>
         <ModalBody>{children}</ModalBody>
-        <ModalFooter></ModalFooter>
+        {renderFooter && (
+          <ModalFooter className="justify-center">{renderFooter()}</ModalFooter>
+        )}
       </ModalContent>
     </Modal>
   );

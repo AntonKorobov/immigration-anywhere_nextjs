@@ -1,30 +1,45 @@
 import { ILocation, IReview } from '../postgresql/types';
 
-export interface GETLocationGeodataResponse {
-  data: {
-    latitude: null | number;
-    longitude: null | number;
-    label: null | string;
-    name: null | string;
-    type: null | string;
-    number: null | string;
-    street: null | string;
-    postal_code: null | string;
-    confidence: null | number;
-    region: null | string;
-    region_code: null | string;
-    administrative_area: null | string;
-    neighbourhood: null | string;
-    country: null | string;
-    country_code: null | string;
-    map_url: null | string;
-  }[];
+export interface GETLocationGeoDataResponseData {
+  latitude: number;
+  longitude: number;
+  label: string;
+  name: string;
+  type: string;
+  number: string;
+  street: string;
+  postal_code: string;
+  confidence: number;
+  region: string;
+  region_code: string;
+  administrative_area: string;
+  neighbourhood: string;
+  country: string;
+  country_code: string;
+  map_url: string;
 }
 
-export interface POSTLocationRequest {
-  coordinates: { latitude: string; longitude: string };
+export interface GETLocationGeoDataResponseFull {
+  data: GETLocationGeoDataResponseData[];
+}
+
+export interface ILocationGeoData {
   locationName: string;
+  coordinates: { x: number; y: number };
   countryId: string;
+}
+
+export type GETLocationGeoDataResponse = ILocationGeoData[];
+
+export interface POSTLocationRequest {
+  locationName: string;
+  coordinates: { x: number; y: number };
+  countryId: string;
+}
+
+export interface POSTLocationResponse {
+  data: ILocation;
+  status: number;
 }
 
 export interface GETLocationsResponse {
@@ -35,4 +50,17 @@ export interface GETLocationsResponse {
 export interface GETReviewsResponse {
   data: IReview[];
   status: number;
+}
+
+export interface POSTReviewsRequest {
+  userName: string;
+  rating: number;
+  reviewText: string;
+  locationName: string;
+  locationGeoData: ILocationGeoData;
+}
+
+export interface POSTReviewsResponse {
+  message: string;
+  isSuccess: boolean;
 }

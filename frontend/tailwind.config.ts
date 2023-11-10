@@ -15,7 +15,31 @@ const config: Config = {
       },
     },
   },
-  plugins: [nextui()],
+  plugins: [
+    nextui({
+      layout: {
+        disabledOpacity: '0.3',
+        radius: {
+          small: '2px',
+          medium: '4px',
+          large: '6px',
+        },
+        borderWidth: {
+          small: '1px',
+          medium: '1px',
+          large: '2px',
+        },
+      },
+      themes: {
+        light: {
+          colors: {
+            focus: '#86b7fe',
+          },
+        },
+        dark: {},
+      },
+    }),
+  ],
   darkMode: 'class',
 };
 export default config;
