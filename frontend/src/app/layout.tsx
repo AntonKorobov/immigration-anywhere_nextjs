@@ -10,12 +10,12 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Immigration Anywhere',
-  description: 'v0.1.0',
+  description: 'Оставляйте и читайте отзывы о любом месте на Земле',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body className={inter.className}>
         <Providers>
           <Header />
