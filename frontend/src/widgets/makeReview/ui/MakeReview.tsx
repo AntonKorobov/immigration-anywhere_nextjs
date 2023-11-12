@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { ReviewForm } from '@/features/createReview/ui/ReviewForm';
+import { ReviewForm } from '@/features/reviewForm';
 import { Button } from '@nextui-org/button';
 
 export function MakeReview() {

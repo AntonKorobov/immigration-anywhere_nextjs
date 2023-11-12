@@ -12,14 +12,21 @@ export async function GET(request: Request) {
   if (!locationId) {
     return NextResponse.json({ message: `Location id is wrong` }, { status: 404 });
   }
-  const data = await getReviewsPostgresql(locationId);
-  if (!data) {
+  try {
+    const data = await getReviewsPostgresql(locationId);
+    if (!data) {
+      return NextResponse.json(
+        { message: `Can't get data from database` },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json(data.rows, { status: 200 });
+  } catch (error) {
     return NextResponse.json(
-      { message: `Can't get data from database` },
+      { message: `Can't get data from database`, error },
       { status: 500 }
     );
   }
-  return NextResponse.json(data.rows, { status: 200 });
 }
 
 export async function POST(request: Request) {
@@ -33,10 +40,10 @@ export async function POST(request: Request) {
       reviewText,
       locationGeoData,
     });
-    return NextResponse.json({ message: 'Success', isSuccess: true }, { status: 200 });
+    return NextResponse.json({ message: 'Success', success: true }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { message: `Can't get data from database`, isSuccess: false },
+      { message: `Can't get data from database`, error, success: false },
       { status: 500 }
     );
   }

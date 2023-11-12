@@ -42,7 +42,7 @@ export function ReviewForm({ isOpen, onClose }: IReviewFormProps) {
         ...formData,
         locationGeoData: { ...locationGeoData[0] },
       });
-      if (response.isSuccess) {
+      if (response.success) {
         onClose();
         reset();
         setIsSuccessModalOpen(true);

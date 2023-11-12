@@ -62,5 +62,5 @@ export interface POSTReviewsRequest {
 
 export interface POSTReviewsResponse {
   message: string;
-  isSuccess: boolean;
+  success: boolean;
 }

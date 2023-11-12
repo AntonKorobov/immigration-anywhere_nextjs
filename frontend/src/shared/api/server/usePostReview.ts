@@ -21,7 +21,7 @@ export function usePostReview() {
       const response = await trigger(data);
       mutate('/api/locations');
       // TODO Try to move mutation in feature component
-      return { isSuccess: response.isSuccess };
+      return { success: response.success };
     },
     isPostingReview: isMutating,
   };
