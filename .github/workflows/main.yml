@@ -6,6 +6,8 @@ jobs:
     steps:
       - name: Get repository code
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: 'frontend'
       - name: Install dependencies
         run: npm ci
       - name: Test application
