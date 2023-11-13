@@ -1,7 +1,27 @@
 name: Test Application
-on: push
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+      - 'develop'
+      - 'release/**'
+      - 'bugfix/**'
+      - 'hotfix/**'
+    paths-ignore:
+      - '.github/workflows/*'
+  pull_request:
+    types: [opened, edited, reopened]
+    branches:
+      - 'main'
+      - 'develop'
+      - 'release/**'
+      - 'bugfix/**'
+      - 'hotfix/**'
+    paths-ignore:
+      - '.github/workflows/*'
 jobs:
-  test: 
+  test:
     runs-on: windows-latest
     steps:
       - name: Get repository code
